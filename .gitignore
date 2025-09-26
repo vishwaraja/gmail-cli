@@ -30,8 +30,24 @@ venv.bak/
 
 # Environment variables
 .env
+.env.local
+.env.*.local
+
+# Google API credentials and tokens
 token.json
 credentials.json
+*.json
+!package.json
+!tsconfig.json
+!*.config.json
+
+# Additional security patterns
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+.secrets/
 
 # Docker data directory (keep directory but ignore contents)
 data/*

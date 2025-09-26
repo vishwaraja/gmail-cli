@@ -6,7 +6,7 @@ This guide explains how to run Gmail CLI using Docker containers for easy deploy
 
 ### Prerequisites
 
-- Docker and Docker Compose installed
+- Docker installed
 - Gmail API credentials (`credentials.json`)
 
 ### 1. Clone and Setup
@@ -18,7 +18,7 @@ cd gmail-cli
 
 ### 2. Add Gmail API Credentials
 
-Place your `credentials.json` file in the project root directory.
+Place your `credentials.json` file in the secure location: `~/.gmail-cli/credentials.json`
 
 ### 3. Run Docker Setup
 
@@ -28,29 +28,29 @@ Place your `credentials.json` file in the project root directory.
 
 This script will:
 - Create necessary directories
-- Build the Docker image
-- Start the Gmail CLI container
-- Set up persistent storage for tokens
+- Build or pull the Docker image
+- Set up secure credential storage
+- Create data directory for persistent storage
 
 ## 📖 Docker Usage
 
-### Using Docker Compose (Recommended)
+### Using the Docker Runner Script (Recommended)
 
 ```bash
 # Authenticate with Gmail (first time only)
-docker-compose exec gmail-cli gmail auth
+./docker-run.sh auth
 
 # List recent emails
-docker-compose exec gmail-cli gmail list
+./docker-run.sh list
 
 # Send an email
-docker-compose exec gmail-cli gmail send --to user@example.com --subject "Hello" --body "Test email"
+./docker-run.sh send --to user@example.com --subject "Hello" --body "Test email"
 
 # Search emails
-docker-compose exec gmail-cli gmail search "is:unread"
+./docker-run.sh search "is:unread"
 
 # Get help
-docker-compose exec gmail-cli gmail --help
+./docker-run.sh --help
 ```
 
 ### Using the Docker Run Script
@@ -73,29 +73,35 @@ For one-time commands without keeping a container running:
 
 ```bash
 # Run a single command and exit
-docker-compose --profile run run gmail-cli-run gmail list
-docker-compose --profile run run gmail-cli-run gmail search "from:important@example.com"
+docker run -it --rm \
+  -v $(pwd)/data:/app/data \
+  -v ~/.gmail-cli/credentials.json:/app/credentials.json:ro \
+  -v ~/.gmail-cli/token.json:/app/token.json \
+  -e GMAIL_CREDENTIALS_PATH="/app/credentials.json" \
+  -e GMAIL_TOKEN_PATH="/app/token.json" \
+  vishwa86/gmail-cli:latest list
+
+docker run -it --rm \
+  -v $(pwd)/data:/app/data \
+  -v ~/.gmail-cli/credentials.json:/app/credentials.json:ro \
+  -v ~/.gmail-cli/token.json:/app/token.json \
+  -e GMAIL_CREDENTIALS_PATH="/app/credentials.json" \
+  -e GMAIL_TOKEN_PATH="/app/token.json" \
+  vishwa86/gmail-cli:latest search "from:important@example.com"
 ```
 
 ## 🔧 Docker Configuration
 
-### Docker Compose Services
-
-The `docker-compose.yml` includes two services:
-
-1. **gmail-cli**: Persistent container for interactive use
-2. **gmail-cli-run**: One-time command execution
-
 ### Volumes
 
-- `./data:/app/data` - Persistent storage for tokens and data
-- `./credentials.json:/app/credentials.json:ro` - Read-only credentials
-- `./token.json:/app/token.json` - Token storage
+- `./data:/app/data` - Persistent storage for data
+- `~/.gmail-cli/credentials.json:/app/credentials.json:ro` - Read-only credentials from secure location
+- `~/.gmail-cli/token.json:/app/token.json` - Token storage from secure location
 
 ### Environment Variables
 
-- `TOKEN_FILE=/app/data/token.json` - Token file location
-- `CREDENTIALS_FILE=/app/credentials.json` - Credentials file location
+- `GMAIL_CREDENTIALS_PATH=/app/credentials.json` - Credentials file location
+- `GMAIL_TOKEN_PATH=/app/token.json` - Token file location
 
 ## 🛠️ Docker Commands
 

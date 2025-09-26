@@ -21,8 +21,7 @@ console = Console()
 
 @click.group()
 @click.version_option(version="1.0.0", prog_name="Gmail CLI")
-@click.option('--help-detailed', is_flag=True, help='Show detailed help with examples')
-def main(help_detailed):
+def main():
     """Gmail CLI - A powerful command-line interface for Gmail
     
     A comprehensive Gmail management tool with support for:
@@ -35,8 +34,13 @@ def main(help_detailed):
     
     Get started with: gmail auth
     """
-    if help_detailed:
-        show_detailed_help()
+    pass
+
+
+@main.command()
+def help_detailed():
+    """Show detailed help with examples"""
+    show_detailed_help()
 
 
 def show_detailed_help():

@@ -26,9 +26,16 @@ SCOPES = [
 class GmailAuthenticator:
     """Handles Gmail API authentication and service creation"""
     
-    def __init__(self, credentials_file: str = 'credentials.json', token_file: str = 'token.json'):
-        self.credentials_file = credentials_file
-        self.token_file = token_file
+    def __init__(self, credentials_file: Optional[str] = None, token_file: Optional[str] = None):
+        # Use environment variables or secure defaults
+        self.credentials_file = credentials_file or os.getenv(
+            'GMAIL_CREDENTIALS_PATH', 
+            os.path.expanduser('~/.gmail-cli/credentials.json')
+        )
+        self.token_file = token_file or os.getenv(
+            'GMAIL_TOKEN_PATH', 
+            os.path.expanduser('~/.gmail-cli/token.json')
+        )
         self.service = None
     
     def authenticate(self) -> bool:
@@ -51,8 +58,14 @@ class GmailAuthenticator:
             else:
                 if not os.path.exists(self.credentials_file):
                     print(f"❌ Credentials file '{self.credentials_file}' not found!")
-                    print("Please download your OAuth2 credentials from Google Cloud Console")
-                    print("and save them as 'credentials.json' in the project directory.")
+                    print("\n📋 Setup Instructions:")
+                    print("1. Go to Google Cloud Console (https://console.cloud.google.com/)")
+                    print("2. Create a new project or select existing one")
+                    print("3. Enable Gmail API")
+                    print("4. Create OAuth2 credentials")
+                    print("5. Download credentials.json")
+                    print(f"6. Save it as: {self.credentials_file}")
+                    print("\n💡 Tip: Use environment variable GMAIL_CREDENTIALS_PATH to specify custom location")
                     return False
                 
                 flow = InstalledAppFlow.from_client_secrets_file(
