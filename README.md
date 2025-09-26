@@ -13,16 +13,45 @@ A powerful, feature-rich command-line interface for Gmail built with Python. Man
 - 🗑️ **Delete emails** - Remove unwanted messages
 - 🔐 **Secure authentication** - OAuth2 authentication with Google
 - 🎨 **Beautiful interface** - Rich terminal UI with colors and formatting
+- 🐳 **Docker support** - Easy containerized deployment and isolation
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.8 or higher (for local installation)
+- Docker and Docker Compose (for containerized installation)
 - Gmail account
 - Google Cloud Project with Gmail API enabled
 
-### Installation
+### Installation Options
+
+#### Option 1: Docker Installation (Recommended)
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/vishwaraja/gmail-cli.git
+   cd gmail-cli
+   ```
+
+2. **Set up Gmail API credentials:**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project or select existing one
+   - Enable the Gmail API
+   - Create OAuth2 credentials (Desktop application)
+   - Download the credentials file and save as `credentials.json` in the project directory
+
+3. **Run Docker setup:**
+   ```bash
+   ./docker-setup.sh
+   ```
+
+4. **Authenticate with Gmail:**
+   ```bash
+   ./docker-run.sh auth
+   ```
+
+#### Option 2: Local Installation
 
 1. **Clone the repository:**
    ```bash
@@ -47,23 +76,28 @@ A powerful, feature-rich command-line interface for Gmail built with Python. Man
    pip install -e .
    ```
 
-### First Time Setup
-
-1. **Authenticate with Gmail:**
+5. **Authenticate with Gmail:**
    ```bash
    gmail auth
    ```
+
+### First Time Setup
+
+1. **Authenticate with Gmail:**
+   - **Docker:** `./docker-run.sh auth`
+   - **Local:** `gmail auth`
+   
    This will open a browser window for OAuth2 authentication.
 
 2. **Test the connection:**
-   ```bash
-   gmail list
-   ```
+   - **Docker:** `./docker-run.sh list`
+   - **Local:** `gmail list`
 
 ## 📖 Usage
 
 ### Basic Commands
 
+#### Local Installation
 ```bash
 # List recent emails
 gmail list
@@ -91,6 +125,39 @@ gmail mark <message-id> --unread
 
 # Delete an email
 gmail delete <message-id>
+```
+
+#### Docker Installation
+```bash
+# List recent emails
+./docker-run.sh list
+
+# List emails with custom query
+./docker-run.sh list --query "from:example@gmail.com" --max-results 20
+
+# Read a specific email
+./docker-run.sh read <message-id>
+
+# Send an email
+./docker-run.sh send --to recipient@example.com --subject "Hello" --body "This is a test email"
+
+# Search emails
+./docker-run.sh search "is:unread from:important@example.com"
+
+# List all labels
+./docker-run.sh labels
+
+# Mark email as read
+./docker-run.sh mark <message-id> --read
+
+# Mark email as unread
+./docker-run.sh mark <message-id> --unread
+
+# Delete an email
+./docker-run.sh delete <message-id>
+
+# Open interactive shell
+./docker-run.sh shell
 ```
 
 ### Advanced Usage
@@ -157,6 +224,25 @@ gmail-cli/
 ├── README.md
 ├── .env.example
 └── .gitignore
+```
+
+## 🐳 Docker Usage
+
+For detailed Docker setup and usage instructions, see [DOCKER.md](DOCKER.md).
+
+### Quick Docker Commands
+
+```bash
+# Setup Docker environment
+./docker-setup.sh
+
+# Run commands
+./docker-run.sh auth          # Authenticate
+./docker-run.sh list          # List emails
+./docker-run.sh shell         # Open shell
+
+# One-time commands
+docker-compose --profile run run gmail-cli-run gmail list
 ```
 
 ## 🛠️ Development
