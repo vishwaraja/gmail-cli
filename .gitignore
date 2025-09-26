@@ -33,6 +33,10 @@ venv.bak/
 token.json
 credentials.json
 
+# Docker data directory (keep directory but ignore contents)
+data/*
+!data/.gitkeep
+
 # IDE
 .vscode/
 .idea/
