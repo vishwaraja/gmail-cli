@@ -21,7 +21,7 @@ You need to add the following secrets to your GitHub repository:
 3. Click **New repository secret** and add:
 
    - **Name**: `DOCKERHUB_USERNAME`
-   - **Value**: `vishwa86`
+   - **Value**: `your_docker_hub_username`
 
    - **Name**: `DOCKERHUB_TOKEN`
    - **Value**: `your_docker_hub_personal_access_token`
