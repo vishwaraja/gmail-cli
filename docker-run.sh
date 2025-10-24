@@ -67,6 +67,19 @@ if [ ! -f "$TOKEN_FILE" ] && [ -f "token.json" ]; then
     print_status "Token moved to secure location: $TOKEN_FILE"
 fi
 
+# Create empty token file if it doesn't exist (prevents Docker from creating a directory)
+if [ ! -e "$TOKEN_FILE" ]; then
+    touch "$TOKEN_FILE"
+    chmod 600 "$TOKEN_FILE"
+elif [ -d "$TOKEN_FILE" ]; then
+    # Remove if it's a directory (Docker mount artifact)
+    print_warning "Removing invalid token.json directory..."
+    rmdir "$TOKEN_FILE" 2>/dev/null || rm -rf "$TOKEN_FILE"
+    touch "$TOKEN_FILE"
+    chmod 600 "$TOKEN_FILE"
+    print_status "Token file recreated"
+fi
+
 # Create data directory if it doesn't exist
 mkdir -p data
 
